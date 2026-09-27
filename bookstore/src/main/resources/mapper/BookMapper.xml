@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookstore.mapper.BookMapper">
+
+    <!-- 基于分类推荐图书（排除用户已购买的） -->
+    <select id="selectRecommendByCategory" resultType="com.bookstore.entity.Book">
+        SELECT *
+        FROM tb_book
+        WHERE status = 1
+        AND is_deleted = 0
+        AND category_id IN
+        <foreach collection="categoryIds" item="cid" open="(" separator="," close=")">
+            #{cid}
+        </foreach>
+        AND id NOT IN (
+        SELECT oi.book_id
+        FROM tb_order_item oi
+        JOIN tb_order o ON oi.order_id = o.id
+        WHERE o.user_id = #{userId}
+        AND o.status &gt;= 1
+        )
+        ORDER BY sales DESC
+        LIMIT #{limit}
+    </select>
+
+</mapper>

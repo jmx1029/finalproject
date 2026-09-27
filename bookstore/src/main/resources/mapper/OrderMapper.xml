@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookstore.mapper.OrderMapper">
+
+    <!-- 月度销售额趋势 -->
+    <select id="getMonthlyTrend" resultType="java.util.Map">
+        SELECT DATE_FORMAT(create_time, '%Y-%m') as month,
+               COALESCE(SUM(total_amount), 0) as total
+        FROM tb_order
+        WHERE status &gt;= 1 AND is_deleted = 0
+          AND YEAR(create_time) = #{year}
+        GROUP BY month
+        ORDER BY month ASC
+    </select>
+
+    <!-- 分类销量占比 -->
+    <select id="getCategoryRatio" resultType="java.util.Map">
+        SELECT c.name as name, SUM(oi.quantity) as value
+        FROM tb_order_item oi
+                 JOIN tb_order o ON oi.order_id = o.id
+                 JOIN tb_book b ON oi.book_id = b.id
+                 JOIN tb_category c ON b.category_id = c.id
+        WHERE o.status &gt;= 1 AND o.is_deleted = 0
+        GROUP BY c.id, c.name
+        ORDER BY value DESC
+    </select>
+
+    <!-- 总销售额 -->
+    <select id="getTotalSales" resultType="java.math.BigDecimal">
+        SELECT COALESCE(SUM(total_amount), 0)
+        FROM tb_order
+        WHERE status &gt;= 1 AND is_deleted = 0
+    </select>
+
+    <!-- 近7日销售趋势 -->
+    <select id="getLast7DaysTrend" resultType="java.util.Map">
+        SELECT
+            DATE(create_time) as date,
+            COALESCE(SUM(total_amount), 0) as amount
+        FROM tb_order
+        WHERE status &gt;= 1
+          AND is_deleted = 0
+          AND create_time &gt;= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        GROUP BY DATE(create_time)
+        ORDER BY date ASC
+    </select>
+
+    <!-- 热门分类销量 -->
+    <select id="getCategorySales" resultType="java.util.Map">
+        SELECT
+            c.name as name,
+            COALESCE(SUM(oi.quantity), 0) as value
+        FROM tb_category c
+                 LEFT JOIN tb_book b ON b.category_id = c.id AND b.is_deleted = 0
+                 LEFT JOIN tb_order_item oi ON oi.book_id = b.id
+                 LEFT JOIN tb_order o ON oi.order_id = o.id AND o.status &gt;= 1 AND o.is_deleted = 0
+        WHERE c.parent_id != 0 AND c.is_deleted = 0
+        GROUP BY c.id, c.name
+        ORDER BY value DESC
+        LIMIT 10
+    </select>
+
+    <!-- 热门商品 Top10 -->
+    <select id="getHotBooksTop10" resultType="java.util.Map">
+        SELECT
+            b.id as bookId,
+            b.title as title,
+            b.author as author,
+            COALESCE(SUM(oi.quantity), 0) as totalSales,
+            COALESCE(SUM(oi.price * oi.quantity), 0) as totalAmount
+        FROM tb_book b
+                 LEFT JOIN tb_order_item oi ON oi.book_id = b.id
+                 LEFT JOIN tb_order o ON oi.order_id = o.id AND o.status &gt;= 1 AND o.is_deleted = 0
+        WHERE b.is_deleted = 0 AND b.status = 1
+        GROUP BY b.id, b.title, b.author
+        ORDER BY totalSales DESC
+        LIMIT 10
+    </select>
+
+</mapper>

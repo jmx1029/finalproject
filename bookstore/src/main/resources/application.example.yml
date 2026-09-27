@@ -1,0 +1,98 @@
+# ============================================================
+#  应用基础配置（示例模板，可安全提交到公开仓库）
+#  使用方法：复制本文件为 application.yml，再按本机环境修改
+#  application.yml 已在 .gitignore 中忽略，请勿提交真实密码
+# ============================================================
+server:
+  port: 8080
+
+spring:
+  # 应用名称
+  application:
+    name: bookstore
+
+  # ---------- 数据源配置 (MySQL 8) ----------
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/book_store?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root                    # 改为你的 MySQL 用户名
+    password: your_mysql_password     # 改为你的 MySQL 密码
+
+  # ---------- Redis 配置 ----------
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:                       # 本地无密码留空；生产环境必须填写密码
+      database: 0
+      timeout: 3000ms
+
+  # ---------- 文件上传限制 ----------
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  # ---------- Jackson 序列化配置 ----------
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    serialization:
+      write-dates-as-timestamps: false
+
+
+# ============================================================
+#  MyBatis-Plus 配置
+# ============================================================
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.bookstore.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: is_deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# ============================================================
+#  日志级别控制
+# ============================================================
+logging:
+  level:
+    root: WARN
+    com.bookstore: INFO
+    com.baomidou.mybatisplus: WARN
+    org.springframework: WARN
+    org.apache.catalina: WARN
+    org.apache.tomcat: WARN
+
+# ============================================================
+#  自定义业务配置
+# ============================================================
+bookstore:
+  jwt:
+    # 请替换为自定义随机字符串（至少 32 字节 / 256 位），切勿与线上环境共用
+    secret: please-change-this-to-your-own-random-secret-key-at-least-32-bytes
+    expiration: 604800000    # 7天，单位毫秒
+  upload:
+    path: ./uploads/         # 图片上传本地路径
+
+# ============================================================
+#  API 文档（Knife4j / SpringDoc OpenAPI）
+#  生产环境建议将 enabled 改为 false
+# ============================================================
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+  production: false

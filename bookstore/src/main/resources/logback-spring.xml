@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 简洁格式：只显示时间、级别、类名、消息 -->
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%logger{36}] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 设置根日志级别为 WARN -->
+    <root level="WARN">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+    <!-- 你的业务包：INFO 级别（能看到业务日志） -->
+    <logger name="com.bookstore" level="INFO" />
+
+    <!-- MyBatis：只显示 WARN 及以上（不输出 SQL） -->
+    <logger name="com.baomidou.mybatisplus" level="WARN" />
+    <logger name="org.apache.ibatis" level="WARN" />
+
+    <!-- Spring 框架：WARN 级别 -->
+    <logger name="org.springframework" level="WARN" />
+    <logger name="org.apache.catalina" level="WARN" />
+    <logger name="org.apache.tomcat" level="WARN" />
+
+    <!-- 如果想完全关闭某些特定类的日志 -->
+    <logger name="org.springframework.web.servlet.mvc.method.annotation" level="ERROR" />
+
+</configuration>

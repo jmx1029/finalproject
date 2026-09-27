@@ -1,0 +1,60 @@
+# ==================== IDE / 编辑器 ====================
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sw?
+
+# ==================== Java 后端 ====================
+target/
+build/
+HELP.md
+!.mvn/wrapper/maven-wrapper.jar
+
+# ==================== 前端 ====================
+bookstore/node_modules/
+bookstore-admin/node_modules/
+bookstore/dist/
+bookstore-admin/dist/
+bookstore-admin/dist-ssr/
+bookstore-admin/coverage/
+bookstore-admin/.eslintcache
+*.local
+
+# ==================== 敏感配置（仅保留本地，提交 .example 模板）====================
+bookstore/src/main/resources/application.yml
+bookstore-admin/.env
+bookstore-admin/.env.*
+!bookstore-admin/.env.example
+
+# ==================== 用户上传文件（运行时业务数据）====================
+bookstore/uploads/
+
+# ==================== 接口调试文件 ====================
+bookstore/http/
+
+# ==================== 论文 / 简历 / 临时脚本目录 ====================
+thesis_temp/
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+
+# ==================== 日志 ====================
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ==================== 系统文件 ====================
+.DS_Store
+Thumbs.db
